@@ -1,6 +1,7 @@
 export interface MainCommandOptions {
   published?: string
   onlyChangesets?: string
+  cwd?: string
 }
 
 // This type represents a couple of possible literal values for a string, but also
@@ -19,6 +20,7 @@ export type Env = GitLabCIPredefinedVariables &
     GITLAB_TOKEN_TYPE: LooseString<'job' | 'oauth'>
     GITLAB_CI_USER_NAME?: string
     GITLAB_CI_USER_EMAIL: string
+    CI_SERVER_HOST: string
     GITLAB_COMMENT_TYPE: LooseString<'discussion' | 'note'>
     GITLAB_ADD_CHANGESET_MESSAGE?: string
     DEBUG_GITLAB_CREDENTIAL: LooseString<'1' | 'true'>

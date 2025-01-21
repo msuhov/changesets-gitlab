@@ -15,8 +15,8 @@ export const env = {
     process.env.GITLAB_HOST ??
     process.env.CI_SERVER_URL ??
     'https://gitlab.com',
-  GITLAB_CI_USER_EMAIL:
-    process.env.GITLAB_CI_USER_EMAIL || 'gitlab[bot]@users.noreply.gitlab.com',
+  CI_SERVER_HOST: process.env.CI_SERVER_HOST ?? 'gitlab.com',
+  GITLAB_CI_USER_EMAIL: process.env.GITLAB_CI_USER_EMAIL,
   GITLAB_COMMENT_TYPE: process.env.GITLAB_COMMENT_TYPE ?? 'discussion',
   DEBUG_GITLAB_CREDENTIAL: process.env.DEBUG_GITLAB_CREDENTIAL ?? 'false',
 

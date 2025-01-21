@@ -3,13 +3,14 @@ import { exec } from '@actions/exec'
 import { env } from './env.js'
 import { execWithOutput, identify } from './utils.js'
 
-export const setupUser = async () => {
+export const setupUser = async (username: string) => {
   await exec('git', [
     'config',
     'user.name',
-    env.GITLAB_CI_USER_NAME || env.GITLAB_USER_NAME,
+    env.GITLAB_CI_USER_NAME || env.GITLAB_USER_NAME || username,
   ])
-  await exec('git', ['config', 'user.email', env.GITLAB_CI_USER_EMAIL])
+  const email = env.GITLAB_CI_USER_EMAIL || `${username}@${env.CI_SERVER_HOST}`
+  await exec('git', ['config', 'user.email', email])
 }
 
 export const pullBranch = async (branch: string) => {
@@ -52,7 +53,7 @@ export const reset = async (
 
 export const commitAll = async (message: string) => {
   await exec('git', ['add', '-A', '.'])
-  await exec('git', ['commit', '-m', message])
+  await exec('git', ['commit', '-m', message, '--no-verify'])
 }
 
 export const checkIfClean = async (): Promise<boolean> => {

@@ -146,7 +146,7 @@ export async function getAllFiles(dir: string, base = dir): Promise<string[]> {
         : [path.relative(base, res)]
     }),
   )
-  return files.flat()
+  return files.flat().filter(f => !f.includes('node_modules'))
 }
 
 export const execSync = (command: string) =>

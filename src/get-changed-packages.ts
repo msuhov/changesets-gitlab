@@ -57,7 +57,7 @@ export const getChangedPackages = async ({
 
   async function getPackage(pkgPath: string) {
     const jsonContent = await fetchJsonFile<PackageJSON>(
-      pkgPath + '/package.json',
+      nodePath.join(pkgPath, 'package.json'),
     )
     return {
       packageJson: jsonContent,
@@ -88,18 +88,18 @@ export const getChangedPackages = async ({
   const changedFiles = await changedFilesPromise
 
   for (const item of tree) {
-    if (item.endsWith('/package.json')) {
+    if (item.endsWith('/package.json') && !item.includes('node_modules')) {
       const dirPath = nodePath.dirname(item)
       potentialWorkspaceDirectories.push(dirPath)
     } else if (item === 'pnpm-workspace.yaml') {
       isPnpm = true
-    } else if (item === '.changeset/pre.json') {
+    } else if (item.endsWith('.changeset/pre.json')) {
       preStatePromise = fetchJsonFile('.changeset/pre.json')
     } else if (
-      item !== '.changeset/README.md' &&
+      !item.endsWith('.changeset/README.md') &&
       item.startsWith('.changeset') &&
       item.endsWith('.md') &&
-      changedFiles.includes(item)
+      changedFiles.some(x => x.endsWith(item))
     ) {
       const res = /\.changeset\/([^.]+)\.md/.exec(item)
       if (!res) {

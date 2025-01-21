@@ -291,6 +291,7 @@ ${
     const finalCommitMessage = `${commitMessage}${
       preState ? ` (${preState.tag})` : ''
     }`
+
     await gitUtils.commitAll(finalCommitMessage)
   }
 

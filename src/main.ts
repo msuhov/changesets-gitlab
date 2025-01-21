@@ -16,6 +16,7 @@ import { createApi } from './index.js'
 export const main = async ({
   published,
   onlyChangesets,
+  cwd = process.cwd(),
 }: MainCommandOptions = {}) => {
   const {
     CI,
@@ -30,13 +31,11 @@ export const main = async ({
   setOutput('publishedPackages', [])
 
   if (CI) {
-    console.log('setting git user')
-    await setupUser()
+    const username = await getUsername(createApi())
+
+    await setupUser(username)
 
     const url = new URL(GITLAB_HOST)
-
-    console.log('setting GitLab credentials')
-    const username = await getUsername(createApi())
 
     await exec(
       'git',
@@ -52,7 +51,7 @@ export const main = async ({
     )
   }
 
-  const { changesets } = await readChangesetState()
+  const { changesets } = await readChangesetState(cwd)
 
   const publishScript = getInput('publish')
   const hasChangesets = changesets.length > 0
@@ -88,6 +87,7 @@ export const main = async ({
         script: publishScript,
         gitlabToken: GITLAB_TOKEN,
         createGitlabReleases: getInput('create_gitlab_releases') !== 'false',
+        cwd,
       })
 
       if (result.published) {
@@ -110,6 +110,7 @@ export const main = async ({
         commitMessage: getOptionalInput('commit'),
         removeSourceBranch: getInput('remove_source_branch') === 'true',
         hasPublishScript,
+        cwd,
       })
       if (onlyChangesets) {
         execSync(onlyChangesets)

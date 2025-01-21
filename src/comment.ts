@@ -199,11 +199,13 @@ const hasChangesetBeenAdded = async (
   changedFilesPromise: Promise<MergeRequestChangesSchema>,
 ) => {
   const changedFiles = await changedFilesPromise
+
   return changedFiles.changes.some(file => {
     return (
       file.new_file &&
-      /^\.changeset\/.+\.md$/.test(file.new_path) &&
-      file.new_path !== '.changeset/README.md'
+      file.new_path.includes('.changeset/') &&
+      file.new_path.endsWith('.md') &&
+      !file.new_path.endsWith('.changeset/README.md')
     )
   })
 }
